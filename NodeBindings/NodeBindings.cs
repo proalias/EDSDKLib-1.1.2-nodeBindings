@@ -175,6 +175,35 @@ namespace NodeBindings
             finally { WaitEvent.Set(); }
         }
 
+
+        public async Task<object> OpenCameraSession(dynamic input)
+        {
+            var result = new NodeResult();
+
+            //Method work goes here...
+            Console.WriteLine($"Opening session with camera: {MainCamera.DeviceName}");
+
+            List<Camera> cameras = APIHandler.GetCameraList();
+            if (cameras.Count > 0)
+            {
+                MainCamera = cameras[0];
+                MainCamera.DownloadReady += MainCamera_DownloadReady;
+                MainCamera.OpenSession();
+                result.message = $"Opened session with camera: {MainCamera.DeviceName}";
+                Console.WriteLine(result.message);
+                result.success = true;
+            }
+            else
+            {
+                result.success = false;
+                result.message = "Error: Failed to open camera session.";
+            }
+
+                return result;
+        }
+
+
+
         public static bool OpenSession()
         {
             Console.WriteLine($"Opening session with camera: {MainCamera.DeviceName}");
