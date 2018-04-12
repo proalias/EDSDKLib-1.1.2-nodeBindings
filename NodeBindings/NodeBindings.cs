@@ -25,7 +25,7 @@ namespace NodeBindings
 
         public async Task<object> SetOutputPath(dynamic input)
         {
-            var result = new NodeResult(); 
+            var result = new NodeResult();
             try
             {
                 Console.WriteLine("Attempting to set ImageSaveDirectory to " + (string)input.outputPath);
@@ -33,7 +33,7 @@ namespace NodeBindings
                 result.message = "Success.";
                 result.success = true;
             }
-            catch (Exception ex){
+            catch (Exception ex) {
                 //Can't use requested path, resetting to default
                 ImageSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "RemotePhoto");
                 Console.WriteLine(ex.Message.ToString());
@@ -59,21 +59,21 @@ namespace NodeBindings
                 {
                     Console.WriteLine("APIHandler GetCameraList:" + camera);
                 }
-                
+
                 if (cameras.Count > 0)
                 {
                     MainCamera = cameras[0];
                     MainCamera.DownloadReady += MainCamera_DownloadReady;
                     MainCamera.OpenSession();
                     Console.WriteLine($"Opened session with camera: {MainCamera.DeviceName}");
-                    
-                }else{
+
+                } else {
                     Console.WriteLine("No camera found. Please plug in camera");
                     APIHandler.CameraAdded += APIHandler_CameraAdded;
                     WaitEvent.WaitOne();
                     WaitEvent.Reset();
                 }
-                Console.WriteLine("OpenSession"); 
+                Console.WriteLine("OpenSession");
                 if (!Error)
                 {
                     if (ImageSaveDirectory == null)
@@ -102,7 +102,7 @@ namespace NodeBindings
                 APIHandler.Dispose();
                 Console.WriteLine("Program exited.");
             }
-            
+
             return result;
         }
 
@@ -123,6 +123,34 @@ namespace NodeBindings
             return result;
         }
 
+
+        /*
+        * Stub example for reference:
+        */
+        public async Task<object> StartVideo(dynamic input)
+        {
+            var result = new NodeResult();
+            //var stringParameter = (string)input.stringParameter;
+
+            //Method work goes here...
+            
+            result.message = "Example message - did the method call succeed?";
+            result.success = false;
+            return result;
+        }
+      
+
+        public async Task<object> StopVideo(dynamic input)
+        {
+            var result = new NodeResult();
+            //var stringParameter = (string)input.stringParameter;
+
+            //Method work goes here...
+
+            result.message = "Example message - did the method call succeed?";
+            result.success = false;
+            return result;
+        }
 
 
         private static void APIHandler_CameraAdded(CanonAPI sender)
