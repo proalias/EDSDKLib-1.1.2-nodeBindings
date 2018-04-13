@@ -18,24 +18,23 @@ const resultHandler = function(error, result){
         }else{
             console.log("ERROR:" + result.message);
         }
-    }
+    }else{ console.log("ERROR:" + error.message);}
 }
 
 const setOutputPath = bindMethodSignature('SetOutputPath');
 const takePhoto = bindMethodSignature('TakePhoto');
-
-const openCameraSession = bindMethodSignature('OpenCameraSession');
-const openCameraSession = bindMethodSignature('CloseCameraSession');
+const beginSession = bindMethodSignature('BeginSession');
+//const openCameraSession = bindMethodSignature('CloseCameraSession');
 
 
 const startVideo = bindMethodSignature('StartVideo');
 const stopVideo = bindMethodSignature('StopVideo');
 
 
-//openCameraSession( {} ,resultHandler);
+beginSession( {} ,resultHandler);
 //Set the path to save photos from the camera:
-setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
+//setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
 //Take a still photo
-takePhoto( {} ,resultHandler);
-startVideo({}, resultHandler);//NB this is a stub, not yet implemented
-stopVideo({}, resultHandler);//NB this is a stub, not yet implemented
+//takePhoto( {} ,resultHandler);
+//startVideo({}, resultHandler);//NB this is a stub, not yet implemented
+//stopVideo({}, resultHandler);//NB this is a stub, not yet implemented

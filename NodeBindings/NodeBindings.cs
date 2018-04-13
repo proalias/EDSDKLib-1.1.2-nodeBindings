@@ -114,11 +114,32 @@ namespace NodeBindings
         public async Task<object> StartVideo(dynamic input)
         {
             var result = new NodeResult();
-            
-            //Method work goes here...
 
-            result.message = "Example message - did the method call succeed?";
-            result.success = false;
+            //Method work goes here...
+            try
+            {
+                Recording state = (Recording)MainCamera.GetInt32Setting(PropertyID.Record);
+                if (state != Recording.On)
+                {
+                    MainCamera.StartFilming(true);
+
+                    result.message = "Camera is in record mode";
+                    result.success = true;
+                }
+                else
+                {
+                    result.message = "Camera must be in record mode";
+                    result.success = false;
+                }
+            }
+            catch (Exception ex){
+
+            }
+            finally
+            {
+
+            }
+            
             return result;
         }
 
@@ -141,11 +162,43 @@ namespace NodeBindings
         public async Task<object> BeginSession(dynamic input)
         {
             var result = new NodeResult();
+            
+            try
+            {
+                Console.WriteLine("Called C# method from node.");
+                APIHandler = new CanonAPI();
 
-            //Method work goes here...
+                Console.WriteLine("APIHandler initialised");
+                List<Camera> cameras = APIHandler.GetCameraList();
+                foreach (var camera in cameras)
+                {
+                    Console.WriteLine("APIHandler GetCameraList:" + camera);
+                }
 
-            result.message = "Example message - did the method call succeed?";
-            result.success = false;
+                if (cameras.Count > 0)
+                {
+                    MainCamera = cameras[0];
+                    MainCamera.DownloadReady += MainCamera_DownloadReady;
+                    MainCamera.OpenSession();
+                    Console.WriteLine($"Opened session with camera: {MainCamera.DeviceName}");
+
+                }
+                else
+                {
+                    Console.WriteLine("No camera found. Please plug in camera");
+                    APIHandler.CameraAdded += APIHandler_CameraAdded;
+                    WaitEvent.WaitOne();
+                    WaitEvent.Reset();
+                }
+         
+                result.message = $"Opened session with camera: {MainCamera.DeviceName}";
+                result.success= true;
+            
+            }catch  (Exception ex)
+            {
+                result.message = ex.Message;
+                result.success = false;
+            }
             return result;
         }
 
