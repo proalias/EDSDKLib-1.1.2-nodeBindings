@@ -24,7 +24,7 @@ const resultHandler = function(error, result){
 const setOutputPath = bindMethodSignature('SetOutputPath');
 const takePhoto = bindMethodSignature('TakePhoto');
 const beginSession = bindMethodSignature('BeginSession');
-//const openCameraSession = bindMethodSignature('CloseCameraSession');
+const endSession = bindMethodSignature('EndSession');
 
 
 const startVideo = bindMethodSignature('StartVideo');
@@ -32,6 +32,24 @@ const stopVideo = bindMethodSignature('StopVideo');
 
 
 beginSession( {} ,resultHandler);
+//setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
+
+const record=function() {
+    startVideo({}, resultHandler);
+    setTimeout(finishRecord,4000);
+}
+const finishRecord=function() {
+    stopVideo({}, resultHandler);
+    takePhoto( {} ,resultHandler);
+    setTimeout(record,4000);
+}
+setTimeout(record,4000);
+
+
+
+
+//endSession( {} ,resultHandler);
+
 //Set the path to save photos from the camera:
 //setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
 //Take a still photo

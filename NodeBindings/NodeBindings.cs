@@ -50,57 +50,11 @@ namespace NodeBindings
 
             try
             {
-                Console.WriteLine("Called C# method from node.");
-                APIHandler = new CanonAPI();
-
-                Console.WriteLine("APIHandler initialised");
-                List<Camera> cameras = APIHandler.GetCameraList();
-                foreach (var camera in cameras)
-                {
-                    Console.WriteLine("APIHandler GetCameraList:" + camera);
-                }
+                MainCamera.TakePhotoAsync();
                 
-                if (cameras.Count > 0)
-                {
-                    MainCamera = cameras[0];
-                    MainCamera.DownloadReady += MainCamera_DownloadReady;
-                    MainCamera.OpenSession();
-                    Console.WriteLine($"Opened session with camera: {MainCamera.DeviceName}");
-                    
-                }else{
-                    Console.WriteLine("No camera found. Please plug in camera");
-                    APIHandler.CameraAdded += APIHandler_CameraAdded;
-                    WaitEvent.WaitOne();
-                    WaitEvent.Reset();
-                }
-                Console.WriteLine("OpenSession"); 
-                if (!Error)
-                {
-                    if (ImageSaveDirectory == null)
-                    {
-                        ImageSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "RemotePhoto");
-                    }
-                    MainCamera.SetSetting(PropertyID.SaveTo, (int)SaveTo.Host);
-                    MainCamera.SetCapacity(4096, int.MaxValue);
-                    Console.WriteLine($"Set image output path to: {ImageSaveDirectory}");
-
-                    Console.WriteLine("Taking photo with current settings...");
-                    CameraValue tv = TvValues.GetValue(MainCamera.GetInt32Setting(PropertyID.Tv));
-                    if (tv == TvValues.Bulb) MainCamera.TakePhotoBulb(2);
-                    else MainCamera.TakePhoto();
-                    WaitEvent.WaitOne();
-
-                    if (!Error) Console.WriteLine("Photo taken and saved");
-                    result.message = "Photo taken and saved";
-                    result.success = true;
-                }
             }
-            catch (Exception ex) { Console.WriteLine("Error: " + ex.Message); }
-            finally
-            {
-                MainCamera?.Dispose();
-                APIHandler.Dispose();
-                Console.WriteLine("Program exited.");
+            catch (Exception ex) {result.message="Error: " + ex.Message;
+                result.success = false;
             }
             
             return result;
@@ -133,7 +87,8 @@ namespace NodeBindings
                 }
             }
             catch (Exception ex){
-
+                result.message = ex.Message;
+                result.success = false;
             }
             finally
             {
@@ -149,16 +104,22 @@ namespace NodeBindings
         public async Task<object> StopVideo(dynamic input)
         {
             var result = new NodeResult();
-
-            //Method work goes here...
-
-            result.message = "Example message - did the method call succeed?";
-            result.success = false;
+            try
+            {
+                //Method work goes here...
+                bool save = false;//s (bool)STComputerRdButton.IsChecked || (bool)STBothRdButton.IsChecked;
+                MainCamera.StopFilming(save);
+                result.message = "Stopped recording video.";
+                result.success = true;
+            }
+            catch (Exception ex)
+            {
+                result.message = ex.Message;
+                result.success = false;
+            }
             return result;
         }
-        /*
-         * Stub example for reference:
-         */
+       
         public async Task<object> BeginSession(dynamic input)
         {
             var result = new NodeResult();
@@ -166,8 +127,10 @@ namespace NodeBindings
             try
             {
                 Console.WriteLine("Called C# method from node.");
-                APIHandler = new CanonAPI();
-
+                if (APIHandler == null )
+                {
+                    APIHandler = new CanonAPI();
+                }
                 Console.WriteLine("APIHandler initialised");
                 List<Camera> cameras = APIHandler.GetCameraList();
                 foreach (var camera in cameras)
@@ -193,7 +156,7 @@ namespace NodeBindings
          
                 result.message = $"Opened session with camera: {MainCamera.DeviceName}";
                 result.success= true;
-            
+           
             }catch  (Exception ex)
             {
                 result.message = ex.Message;
@@ -210,9 +173,11 @@ namespace NodeBindings
             var result = new NodeResult();
 
             //Method work goes here...
+            MainCamera?.Dispose();
+            APIHandler.Dispose();
 
-            result.message = "Example message - did the method call succeed?";
-            result.success = false;
+            result.message = "Camera session ended.";
+            result.success = true;
             return result;
         }
 
