@@ -1,0 +1,16 @@
+{
+  "name": "node_bindings",
+  "version": "1.0.0",
+  "description": "Wrapper for calling C Sharp EDSDKAPI from node",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "canon",
+    "node",
+    "edsdkapi"
+  ],
+  "author": "Alias Cummins",
+  "license": "ISC"
+}
