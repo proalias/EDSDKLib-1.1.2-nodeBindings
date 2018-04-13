@@ -24,12 +24,12 @@ const resultHandler = function(error, result){
 const setOutputPath = bindMethodSignature('SetOutputPath');
 const takePhoto = bindMethodSignature('TakePhoto');
 
-//const openCameraSession = bindMethodSignature('OpenCameraSession');
-//const openCameraSession = bindMethodSignature('CloseCameraSession');
+const openCameraSession = bindMethodSignature('OpenCameraSession');
+const openCameraSession = bindMethodSignature('CloseCameraSession');
 
 
-//const startVideo = bindMethodSignature('StartVideo');
-//const stopVideo = bindMethodSignature('StopVideo');
+const startVideo = bindMethodSignature('StartVideo');
+const stopVideo = bindMethodSignature('StopVideo');
 
 
 //openCameraSession( {} ,resultHandler);
@@ -37,5 +37,5 @@ const takePhoto = bindMethodSignature('TakePhoto');
 setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
 //Take a still photo
 takePhoto( {} ,resultHandler);
-//startVideo({}, resultHandler);//NB this is a stub, not yet implemented
-//stopVideo({}, resultHandler);//NB this is a stub, not yet implemented
+startVideo({}, resultHandler);//NB this is a stub, not yet implemented
+stopVideo({}, resultHandler);//NB this is a stub, not yet implemented

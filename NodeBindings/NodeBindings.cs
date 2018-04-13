@@ -111,10 +111,36 @@ namespace NodeBindings
         /*
          * Stub example for reference:
          */
-        public async Task<object> ExampleNodeBinding(dynamic input)
+        public async Task<object> StartVideo(dynamic input)
         {
             var result = new NodeResult();
-            var stringParameter = (string)input.stringParameter;
+            
+            //Method work goes here...
+
+            result.message = "Example message - did the method call succeed?";
+            result.success = false;
+            return result;
+        }
+
+        /*
+         * Stub example for reference:
+         */
+        public async Task<object> StopVideo(dynamic input)
+        {
+            var result = new NodeResult();
+
+            //Method work goes here...
+
+            result.message = "Example message - did the method call succeed?";
+            result.success = false;
+            return result;
+        }
+        /*
+         * Stub example for reference:
+         */
+        public async Task<object> BeginSession(dynamic input)
+        {
+            var result = new NodeResult();
 
             //Method work goes here...
 
@@ -123,7 +149,19 @@ namespace NodeBindings
             return result;
         }
 
+        /*
+        * Stub example for reference:
+        */
+        public async Task<object> EndSession(dynamic input)
+        {
+            var result = new NodeResult();
 
+            //Method work goes here...
+
+            result.message = "Example message - did the method call succeed?";
+            result.success = false;
+            return result;
+        }
 
         private static void APIHandler_CameraAdded(CanonAPI sender)
         {
