@@ -11,7 +11,20 @@ const bindMethodSignature = function(methodName){
     });
 }
 
-const resultHandler = function(error, result){
+const resultHandler = function(error, result) {
+    if (!error) {
+        if (result.success) {
+            console.log("Callback on success:" + result.message);
+        } else {
+            console.log("ERROR:" + result.message);
+        }
+    } else {
+        console.log("ERROR:" + error.message);
+    }
+}
+
+
+const getPreviewImageHandle = function(error, result){
     if (!error) {
         if (result.success) {
             console.log("Callback on success:" + result.message);
@@ -21,6 +34,9 @@ const resultHandler = function(error, result){
     }else{ console.log("ERROR:" + error.message);}
 }
 
+
+
+
 const setOutputPath = bindMethodSignature('SetOutputPath');
 const takePhoto = bindMethodSignature('TakePhoto');
 const beginSession = bindMethodSignature('BeginSession');
@@ -29,6 +45,7 @@ const endSession = bindMethodSignature('EndSession');
 
 const startVideo = bindMethodSignature('StartVideo');
 const stopVideo = bindMethodSignature('StopVideo');
+const getPreviewImage = bindMethodSignature('GetPreviewImage');
 
 
 beginSession( {} ,resultHandler);
@@ -38,15 +55,15 @@ const record=function() {
     startVideo({}, resultHandler);
     setTimeout(finishRecord,4000);
 }
+
 const finishRecord=function() {
     stopVideo({}, resultHandler);
     takePhoto( {} ,resultHandler);
     setTimeout(record,4000);
 }
+
+
 setTimeout(record,4000);
-
-
-
 
 //endSession( {} ,resultHandler);
 

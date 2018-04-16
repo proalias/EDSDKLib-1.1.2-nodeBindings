@@ -5,6 +5,8 @@ using System.Threading;
 using EOSDigital.API;
 using EOSDigital.SDK;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace NodeBindings
 {
@@ -15,12 +17,25 @@ namespace NodeBindings
         public bool success = false;
     }
 
+
+    public class PreviewImageResult
+    {
+        public string message = "NodeResult: No message defined";
+        public BitmapImage bitmap;
+        public bool success = false;
+    }
+
+
     class Program
     {
         static CanonAPI APIHandler;
         static Camera MainCamera;
         static string ImageSaveDirectory;
         static bool Error = false;
+
+        static int PreviewTick = 0;
+        static BitmapImage[] PreviewBuffer;//buffer for preview images
+
         static ManualResetEvent WaitEvent = new ManualResetEvent(false);
 
         public async Task<object> SetOutputPath(dynamic input)
@@ -51,7 +66,6 @@ namespace NodeBindings
             try
             {
                 MainCamera.TakePhotoAsync();
-                
             }
             catch (Exception ex) {result.message="Error: " + ex.Message;
                 result.success = false;
@@ -59,8 +73,35 @@ namespace NodeBindings
             
             return result;
         }
-        
 
+        private void MainCamera_LiveViewUpdated(Camera sender, Stream img)
+        {
+            NodeResult result = new NodeResult();
+
+            try
+            {
+                using (WrapStream s = new WrapStream(img))
+                {
+                    img.Position = 0;
+                    BitmapImage EvfImage = new BitmapImage();
+                    EvfImage.BeginInit();
+                    EvfImage.StreamSource = s;
+                    EvfImage.CacheOption = BitmapCacheOption.OnLoad;
+                    EvfImage.EndInit();
+                    EvfImage.Freeze();
+                    PreviewTick += 1;
+                    int t = PreviewTick % 1;
+                    PreviewBuffer[t] = EvfImage.CloneCurrentValue();
+                    //Application.Current.Dispatcher.BeginInvoke(SetImageAction, EvfImage);
+                }
+            }
+            catch (Exception ex)
+            {
+                result.message = "Error: " + ex.Message;
+                result.success = false;
+            }
+            //return result;
+        }
 
         /*
          * Stub example for reference:
@@ -144,7 +185,6 @@ namespace NodeBindings
                     MainCamera.DownloadReady += MainCamera_DownloadReady;
                     MainCamera.OpenSession();
                     Console.WriteLine($"Opened session with camera: {MainCamera.DeviceName}");
-
                 }
                 else
                 {
@@ -180,6 +220,29 @@ namespace NodeBindings
             result.success = true;
             return result;
         }
+
+
+        /*
+       * Stub example for reference:
+       */
+        public async Task<object> GetPreviewImage(dynamic input)
+        {
+            var result = new PreviewImageResult();
+
+            //Method work goes here...
+            try
+            {
+                result.bitmap = PreviewBuffer[PreviewTick].Clone();
+            }catch (Exception exp)
+            {
+                result.bitmap = new BitmapImage().Clone();
+            }
+
+            result.message = "Camera session ended.";
+            result.success = true;
+            return result;
+        }
+
 
         private static void APIHandler_CameraAdded(CanonAPI sender)
         {
