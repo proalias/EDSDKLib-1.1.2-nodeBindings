@@ -49,7 +49,7 @@ const getPreviewImage = bindMethodSignature('GetPreviewImage');
 
 
 beginSession( {} ,resultHandler);
-//setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
+setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
 
 const record=function() {
     startVideo({}, resultHandler);
@@ -58,10 +58,15 @@ const record=function() {
 
 const finishRecord=function() {
     stopVideo({}, resultHandler);
-    takePhoto( {} ,resultHandler);
+    setTimeout(takePhotoAfter2Secs,4000);
+}
+
+const takePhotoAfter2Secs=function() {
+    stopVideo({}, resultHandler);
     setTimeout(record,4000);
 }
 
+takePhoto( {} ,resultHandler);
 
 setTimeout(record,4000);
 

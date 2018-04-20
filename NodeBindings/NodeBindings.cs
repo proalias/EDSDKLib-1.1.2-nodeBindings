@@ -11,11 +11,17 @@ using System.Windows.Media.Imaging;
 namespace NodeBindings
 {
 
+    static Camera MainCamera;
+    static CanonAPI Api;
+    static AutoResetEvent Waiter;
+
     public class NodeResult
     {
         public string message = "NodeResult: No message defined";
         public bool success = false;
     }
+
+
 
 
     public class PreviewImageResult
@@ -65,7 +71,7 @@ namespace NodeBindings
 
             try
             {
-                MainCamera.TakePhotoAsync();
+                MainCamera.StartLiveView();
             }
             catch (Exception ex) {result.message="Error: " + ex.Message;
                 result.success = false;
@@ -113,15 +119,8 @@ namespace NodeBindings
             //Method work goes here...
             try
             {
-                Recording state = (Recording)MainCamera.GetInt32Setting(PropertyID.Record);
-                if (state != Recording.On)
-                {
-                    MainCamera.StartFilming(true);
 
-                    result.message = "Camera is in record mode";
-                    result.success = true;
-                }
-                else
+                
                 {
                     result.message = "Camera must be in record mode";
                     result.success = false;

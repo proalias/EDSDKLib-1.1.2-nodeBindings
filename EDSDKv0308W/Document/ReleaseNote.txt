@@ -1,0 +1,95 @@
+------------------------------------------------------------------------------------------
+                             EDSDK3.8.0 Release Note
+                                   03/01/2018 
+　　　　　　　　　　               Canon Inc.
+------------------------------------------------------------------------------------------
+
+1.History
+
+03/01/2018	-Added support for the Camera EOS M100 / EOS Kiss M / EOS M50 / EOS Kiss X90 / EOS REBEL T7 / EOS 2000D / EOS REBEL T100 / EOS 4000D
+		-Changed the following interfaces.
+		-Modification of program code is necessary for the following interfaces.
+		 Please refer to EDSDK_API.pdf for the detail.
+		 ======================================================
+
+			typedef  struct  tagEdsFocusInfo {
+				EdsRect       	imageRect;          // rectangle of the image.
+    			EdsUInt32     	pointNumber;       // number of frames.
+    			EdsFocusPoint  	focusPoint[600];     // each frame's description.
+				EdsUInt32		executeMode;	// execute mode
+			}EdsFocusInfo;
+
+		======================================================	 
+
+07/31/2017	-Added support for the EOS 6D Mark II / EOS Kiss X9 / EOS Rebel SL2 / EOS 200D
+
+05/31/2017	-Added support for the EOS Kiss X9i / EOS Rebel T7i / EOS 800D / EOS 9000D / EOS 77D / EOS M5 / EOS M6
+
+09/07/2016	-Added support for the EOS 5D Mark IV
+
+04/01/2016	-Added support for the EOS-1D X Mark II / EOS 80D / / EOS Rebel T6 / EOS 1300D / EOS Kiss X80 / EOS M10
+		-Modified an issue that EDSDK crashes on Max OS X 10.11.
+		-Changed the following interfaces from the previous version to support 64bit data size.
+		 Modification of program code is necessary for the following interfaces.
+		 Please refer to EDSDK_API.pdf for the detail.
+		 ======================================================
+
+			EdsError EDSAPI EdsDownload( EdsDirectoryItemRef inDirItemRef,
+					EdsUInt64              inReadSize,
+                			EdsStreamRef           outStream );
+
+			EdsError EDSAPI EdsCreateMemoryStream(
+                			EdsUInt64               inBufferSize,
+                			EdsStreamRef*           outStream );
+
+			EdsError EDSAPI EdsCreateMemoryStreamFromPointer(
+                			EdsVoid*                inUserBuffer,
+                			EdsUInt64               inBufferSize,
+                			EdsStreamRef*           outStream );
+
+			EdsError EDSAPI EdsRead(
+                			EdsStreamRef            inStreamRef,
+               				EdsUInt64               inReadSize,
+                			EdsVoid*                outBuffer, 
+                			EdsUInt64*              outReadSize );
+
+			EdsError EDSAPI EdsWrite(
+                			EdsStreamRef            inStreamRef,
+                			EdsUInt64               inWriteSize,
+                			const EdsVoid*          inBuffer,
+                			EdsUInt64*              outWrittenSize );
+
+			EdsError EDSAPI EdsSeek(
+                			EdsStreamRef            inStreamRef,
+                			EdsInt64                inSeekOffset,
+                			EdsSeekOrigin           inSeekOrigin );
+
+			EdsError EDSAPI EdsGetPosition(
+                			EdsStreamRef            inStreamRef,
+               				EdsUInt64*              outPosition );
+
+			EdsError EDSAPI EdsGetLength(
+                			EdsStreamRef            inStreamRef,
+                			EdsUInt64*              outLength );
+
+			EdsError EDSAPI EdsCopyData(
+                			EdsStreamRef            inStreamRef,
+                			EdsUInt64               inWriteSize,
+                			EdsStreamRef            outStreamRef );
+
+			typedef struct tagEdsDirectoryItemInfo
+			{
+    				EdsUInt64   size;     
+				EdsBool     isFolder;
+				EdsUInt32   groupID;
+				EdsUInt32   option;
+				EdsChar     szFileName[ EDS_MAX_NAME ];
+
+				EdsUInt32  format;
+				EdsUInt32  dateTime;
+			} EdsDirectoryItemInfo;
+
+		======================================================	 
+
+2. Usage of EDSDK
+Please refer to EDSDK_API.pdf for the detail.

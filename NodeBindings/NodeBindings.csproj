@@ -40,6 +40,9 @@
     <Reference Include="EdgeJs, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Edge.js.8.2.1\lib\net40\EdgeJs.dll</HintPath>
     </Reference>
+    <Reference Include="EDSDKAPI">
+      <HintPath>..\..\..\Downloads\EDSDKAPI_V3.4.1-Trial\EDSDKAPI_V3.4.1-Trial\EDSDKAPI\x64\Windows\Net4.5\Base\EDSDKAPI.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -51,15 +54,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Console.cs" />
     <Compile Include="NodeBindings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WrappingStream.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EDSDKLib\EDSDKLib.csproj">
-      <Project>{15e99248-6161-46a4-9183-609ca62406a6}</Project>
-      <Name>EDSDKLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="edge\x64\edge_nativeclr.node">

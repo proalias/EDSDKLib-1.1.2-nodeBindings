@@ -4,13 +4,20 @@
   "description": "Wrapper for calling C Sharp EDSDKAPI from node",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+    "test": "jest",
+    "fix:js": "eslint --fix",
+    "precommit": "lint-staged"  },
   "keywords": [
     "canon",
     "node",
     "edsdkapi"
   ],
   "author": "Alias Cummins",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/jest": "^22.1.0",
+    "jest": "^20.0.4"
+  }
 }
