@@ -1,5 +1,5 @@
 const fileType = require('file-type');
-const edge = require('./node_modules/edge');
+const edge = require('edge');
 const promiseDelay = require('./utils/promiseDelay');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 15 * 1000;
@@ -72,12 +72,10 @@ function getLiveViewPhotos(count, interval = 100) {
     return promise.then(() => photos);
 }
 
+// just mock it now
+class CanonCamera {}
+
 beforeEach(() => {
-    if (adapter instanceof CanonSDKMockAdapter) {
-        adapter = new AdapterClass([new CameraInfo('123', 'MockCamera', 0)]);
-    } else {
-        adapter = new AdapterClass();
-    }
     canonCamera = new CanonCamera(adapter);
 });
 

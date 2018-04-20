@@ -1,6 +1,7 @@
-const edge = require('./node_modules/edge');
+const path = require('path');
+const edge = require('edge');
 
-const assemblyFile = '..\\NodeBindings\\bin\\Debug\\Nodebindings.dll';
+const assemblyFile = path.join(__dirname, '../NodeBindings/bin/Debug/Nodebindings.dll');
 const className = 'NodeBindings.Program';
 
 const bindMethodSignature = function(methodName){
