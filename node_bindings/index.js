@@ -66,7 +66,6 @@ const takeStillPhoto = function() {
 }
 
 const record=function() {
-    startLiveView( {} ,resultHandler);//This must be called before recording video.
     startVideo({}, resultHandler);
     previewIntervalId = setInterval(previewImage,90);
     setTimeout(finishRecord,4000);
@@ -76,9 +75,10 @@ const finishRecord=function() {
     stopVideo({}, resultHandler);
     getLastDownloadedImageFilename({},resultHandler);
     clearInterval(previewIntervalId);
+    endSession({}, resultHandler)
 }
 
-
-setTimeout(takeStillPhoto,500);
-setTimeout(record,2500);
+startLiveView( {} ,resultHandler);//This must be called before recording video.
+//setTimeout(takeStillPhoto,500);
+setTimeout(record,500);
 
