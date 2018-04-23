@@ -41,7 +41,6 @@ namespace NodeBindings
 
         static MemoryStream PreviewBuffer;//buffer for preview images
        
-        static ManualResetEvent WaitEvent = new ManualResetEvent(false);
 
 
 
@@ -73,8 +72,10 @@ namespace NodeBindings
 
                 if (MainCamera.IsShutterButtonAvailable)
                 {
-                    await MainCamera.SC_PressShutterButton(ShutterButton.Completely);
-                    await MainCamera.SC_PressShutterButton(ShutterButton.OFF);
+                    await MainCamera.TakePhoto();
+                   // await MainCamera.SC_PressShutterButton(ShutterButton.Completely);
+                   // await MainCamera.SC_PressShutterButton(ShutterButton.OFF);
+                    
                 }
                 else await MainCamera.SC_TakePicture();
 
@@ -101,7 +102,7 @@ namespace NodeBindings
             {
                 Console.WriteLine("Attempting to set ImageSaveDirectory to " + (string)input.outputPath);
                 ImageSaveDirectory = (string)input.outputPath;
-                result.message = "Success.";
+                result.message = "Set ImageSaveDirectory to " + (string)input.outputPath;
                 result.success = true;
             }
             catch (Exception ex){
@@ -328,7 +329,7 @@ namespace NodeBindings
                 if (!OpenSession()) { Console.WriteLine("Sorry, something went wrong. No camera"); Error = true; }
             }
             catch (Exception ex) { Console.WriteLine("Error: " + ex.Message); Error = true; }
-            finally { WaitEvent.Set(); }
+            finally { Waiter.Set(); }
         }
 
 
@@ -343,7 +344,7 @@ namespace NodeBindings
                 LastImageFileName = Info.FileName;
             }
             catch (Exception ex) { Console.WriteLine("Error: " + ex.Message); Error = true; }
-            finally { WaitEvent.Set(); }
+            finally { Waiter.Set(); }
         }
 
 

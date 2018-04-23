@@ -78,7 +78,7 @@ const finishRecord=function() {
     endSession({}, resultHandler)
 }
 
-startLiveView( {} ,resultHandler);//This must be called before recording video.
-//setTimeout(takeStillPhoto,500);
-setTimeout(record,500);
+//startLiveView( {} ,resultHandler);//This must be called before recording video.
+setTimeout(takeStillPhoto,500);
+//setTimeout(record,500);
 
