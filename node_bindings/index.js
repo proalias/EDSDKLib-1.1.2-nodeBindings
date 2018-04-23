@@ -27,7 +27,7 @@ const resultHandler = function(error, result) {
 const previewImageResultHandler = function(error, result) {
     if (!error) {
         if (result.success) {
-            console.log("Callback on success:"); //+ result.bitmap);//Bitmap from livepreview is available here
+            console.log("Callback on success:result.bitmap"); //+ result.bitmap);//Bitmap from livepreview is available here
         } else {
             console.log("ERROR:" + result.message);
         }
