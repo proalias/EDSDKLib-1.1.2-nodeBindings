@@ -25,7 +25,7 @@ namespace NodeBindings
     public class PreviewImageResult
     {
         public string message = "NodeResult: No message defined";
-        public BitmapImage bitmap;
+        public byte[] bitmap;
         public bool success = false;
     }
 
@@ -34,57 +34,43 @@ namespace NodeBindings
     {
         static Camera MainCamera;
         static CanonAPI Api;
-        static AutoResetEvent Waiter;
-
-        static string ImageSaveDirectory;
+        static AutoResetEvent Waiter = new AutoResetEvent(false);
         static bool Error = false;
+        static string ImageSaveDirectory;
+        static string LastImageFileName;
 
-        static int PreviewTick = 0;
-        static BitmapImage PreviewBuffer;//buffer for preview images
+        static MemoryStream PreviewBuffer;//buffer for preview images
        
-    static ManualResetEvent WaitEvent = new ManualResetEvent(false);
-    
-        public async Task<object> MainAsync()
+        static ManualResetEvent WaitEvent = new ManualResetEvent(false);
+
+
+
+        /**
+         * Example async method:
+         */
+        public async Task<object> ExampleAsyncMethod(dynamic input)
+        {
+            var result = new NodeResult();
+
+            //Method work goes here.
+
+            //Return the success of the method in a result value object:
+            result.message = "Camera session ended.";
+            result.success = true;
+            return result;
+        }
+
+
+        public async Task<object> TakePhoto(dynamic input)
         {
             var result = new NodeResult();
             try
             {
-
-
-                var increment = Edge.Func(@"
-                    var current = 0;
-
-                    return function (data, callback) {
-                        current += data;
-                        callback(null, current);
-                    }
-                ");
-
-                Console.WriteLine(await increment(4));
-
-
-
-                Console.WriteLine("Starting up...");
-                Waiter = new AutoResetEvent(false);
-                Api = new CanonAPI();
-
-                var camList = Api.GetCameraList();
-                if (camList.Count == 0)
-                {
-                    Api.CameraAdded += Api_CameraAdded;
-                    Console.WriteLine("Please connect a camera...");
-                    Waiter.WaitOne();
-                }
-                else MainCamera = camList[0];
-
-                Console.WriteLine("Open session with " + MainCamera.DeviceName + "...");
-                MainCamera.OpenSession();
-                MainCamera.DownloadReady += MainCamera_DownloadReady;
                 MainCamera.SaveTo = SaveTo.Host;
+                MainCamera.DownloadReady += MainCamera_DownloadReady;
+
                 await MainCamera.SetCapacity(4096, 999999999);
 
-                Console.WriteLine("Press any key to take a photo...");
-                Console.ReadKey();
                 if (MainCamera.IsShutterButtonAvailable)
                 {
                     await MainCamera.SC_PressShutterButton(ShutterButton.Completely);
@@ -95,23 +81,17 @@ namespace NodeBindings
                 Console.WriteLine("Waiting for download...");
                 Waiter.WaitOne();
 
-                Console.WriteLine("Closing session...");
-                MainCamera.DownloadReady -= MainCamera_DownloadReady;
-                MainCamera.CloseSession();
+                result.message = "Took photo";
+                result.success = true;
             }
-            catch (DllNotFoundException) { Console.WriteLine("Canon DLLs not found. They should lie beside the executable."); }
-            catch (SDKException SDKex)
-            {
-                if (SDKex.Error == ErrorCode.TAKE_PICTURE_AF_NG) Console.WriteLine("Couldn't focus");
-                else throw;
+            catch(Exception ex) {
+                result.message = ex.Message;
+                result.success = false;
             }
-            catch (Exception ex) { Console.WriteLine("Error: " + ex.Message); }
 
+           
             return result;
         }
-
-
-
 
 
         public async Task<object> SetOutputPath(dynamic input)
@@ -153,14 +133,34 @@ namespace NodeBindings
             return result;
         }
 
-        private void MainCamera_LiveViewUpdated(Camera sender, Stream img)
+        public async Task<object> StopLiveView(dynamic input)
         {
-            PreviewImageResult result = new PreviewImageResult();
-            Console.WriteLine("LiveView updated");
+            NodeResult result = new NodeResult();
 
             try
             {
-                Program.PreviewBuffer = new BitmapImage();
+                MainCamera.StopLiveView();
+                result.message = "Stopping LiveView";
+                result.success = true;
+            }
+            catch (Exception ex)
+            {
+                result.message = "Error: " + ex.Message;
+                result.success = false;
+            }
+
+            return result;
+        }
+
+
+        private void MainCamera_LiveViewUpdated(Camera sender, Stream img)
+        {
+            PreviewImageResult result = new PreviewImageResult();
+            //Console.WriteLine("LiveView updated");
+
+            try
+            {
+                
                 using (WrapStream s = new WrapStream(img))
                 {
                     img.Position = 0;
@@ -170,19 +170,25 @@ namespace NodeBindings
                     EvfImage.CacheOption = BitmapCacheOption.OnLoad;
                     EvfImage.EndInit();
                     EvfImage.Freeze();
+                    
+                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                    String photolocation = ImageSaveDirectory + "/livePreview.jpg";  //file name 
+                    encoder.Frames.Add(BitmapFrame.Create((BitmapImage)EvfImage));
+                    PreviewBuffer = new MemoryStream();
+                    using (PreviewBuffer)
+                        encoder.Save(PreviewBuffer);
                 }
+                
             }
 
             catch (Exception ex)
             {
+                Console.WriteLine("Error: " + ex.Message);
                 result.message = "Error: " + ex.Message;
                 result.success = false;
             }
         }
 
-        /*
-         * Stub example for reference:
-         */
         public async Task<object> StartVideo(dynamic input)
         {
             var result = new NodeResult();
@@ -196,17 +202,11 @@ namespace NodeBindings
                 result.message = ex.Message;
                 result.success = false;
             }
-            finally
-            {
-
-            }
             
             return result;
         }
 
-        /*
-         * Stub example for reference:
-         */
+        
         public async Task<object> StopVideo(dynamic input)
         {
             var result = new NodeResult();
@@ -215,6 +215,7 @@ namespace NodeBindings
                 //Method work goes here...
                 bool save = true;//s (bool)STComputerRdButton.IsChecked || (bool)STBothRdButton.IsChecked;
                 MainCamera.StopFilming(save);
+
                 result.message = "Stopped recording video.";
                 result.success = true;
             }
@@ -232,6 +233,8 @@ namespace NodeBindings
             
             try
             {
+
+                Waiter = new AutoResetEvent(false);
                 Console.WriteLine("Called C# method from node.");
                 if (Api == null )
                 {
@@ -255,8 +258,8 @@ namespace NodeBindings
                 {
                     Console.WriteLine("No camera found. Please plug in camera");
                     Api.CameraAdded += APIHandler_CameraAdded;
-                    WaitEvent.WaitOne();
-                    WaitEvent.Reset();
+                    Waiter.WaitOne();
+                    Waiter.Reset();
                 }
          
                 result.message = $"Opened session with camera: {MainCamera.DeviceName}";
@@ -270,14 +273,11 @@ namespace NodeBindings
             return result;
         }
 
-        /*
-        * Stub example for reference:
-        */
+        
         public async Task<object> EndSession(dynamic input)
         {
             var result = new NodeResult();
-
-            //Method work goes here...
+            
             MainCamera?.Dispose();
             Api.Dispose();
 
@@ -286,33 +286,39 @@ namespace NodeBindings
             return result;
         }
 
-
-        /*
-       * Stub example for reference:
-       */
-        public async Task<object> GetPreviewImage(dynamic input)
+        
+        public async Task<object> GetLastDownloadedImageFilename(dynamic input)
         {
-      
-            Console.WriteLine("GetPreviewImage::0");
-            var result = new PreviewImageResult();
-            //Method work goes here...
-            try
-            {
-                Console.WriteLine("GetPreviewImage::1");
-                PreviewBuffer.Freeze();
-                result.bitmap = PreviewBuffer;
-                Console.WriteLine("GetPreviewImage::2");
-            }
-            catch (Exception exp)
-            {
-                result.bitmap = new BitmapImage();
-            }
-
-            result.message = "Camera session ended.";
+            var result = new NodeResult();
+            
+            result.message = LastImageFileName;
             result.success = true;
             return result;
         }
 
+        
+      
+        public async Task<object> GetPreviewImage(dynamic input)
+        {
+      
+            var result = new PreviewImageResult();
+            //Method work goes here...
+            try
+            {
+                result.bitmap = PreviewBuffer.GetBuffer();
+                result.message = "Preview Image retrieved from buffer";
+                result.success = true;
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+                result.message = exp.Message;
+                result.success = false;
+            }
+            
+            return result;
+        }
+        
 
         private static void APIHandler_CameraAdded(CanonAPI sender)
         {
@@ -325,17 +331,23 @@ namespace NodeBindings
             finally { WaitEvent.Set(); }
         }
 
+
+
         private static void MainCamera_DownloadReady(Camera sender, DownloadInfo Info)
         {
             try
             {
-                Console.WriteLine("Starting image download...");
+                Console.WriteLine("Starting image download...::"+Info.FileName);
                 sender.DownloadFile(Info, ImageSaveDirectory);
+                Console.WriteLine("Image downloading to " + Info.FileName);
+                LastImageFileName = Info.FileName;
             }
             catch (Exception ex) { Console.WriteLine("Error: " + ex.Message); Error = true; }
             finally { WaitEvent.Set(); }
         }
 
+
+    
         public static bool OpenSession()
         {
             Console.WriteLine($"Opening session with camera: {MainCamera.DeviceName}");
@@ -351,41 +363,7 @@ namespace NodeBindings
             }
             else return false;
         }
-
-        #region SDK Events
-
-        static void Api_CameraAdded(CanonAPI sender)
-        {
-
-        }
-
-        static void ErrorHandler_SevereErrorHappened(object sender, Exception ex)
-        {
-            
-        }
-
-        static void ErrorHandler_NonSevereErrorHappened(object sender, ErrorCode ex)
-        {
-            
-        }
-
-       
-        private void MainCamera_CameraHasShutdown(object sender, string Value)
-        {
-            
-        }
-
-        private void MainCamera_LiveViewStopped(Camera sender)
-        {
-            
-        }
-
-        private void MainCamera_ProgressChanged(object sender, int Progress, ref bool Cancel)
-        {
-
-        }
-
-        #endregion
+        
 
     }
 }

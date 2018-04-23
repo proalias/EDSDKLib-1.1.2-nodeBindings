@@ -27,7 +27,7 @@ const resultHandler = function(error, result) {
 const previewImageResultHandler = function(error, result) {
     if (!error) {
         if (result.success) {
-            console.log("Callback on success:" + result.message);
+            console.log("Callback on success:"); //+ result.bitmap);//Bitmap from livepreview is available here
         } else {
             console.log("ERROR:" + result.message);
         }
@@ -39,42 +39,46 @@ const previewImageResultHandler = function(error, result) {
 
 
 const setOutputPath = bindMethodSignature('SetOutputPath');
-//const takePhoto = bindMethodSignature('TakePhoto');
+const takePhoto = bindMethodSignature('TakePhoto');
 const beginSession = bindMethodSignature('BeginSession');
 const endSession = bindMethodSignature('EndSession');
 
 const startLiveView = bindMethodSignature('StartLiveView');
+const stopLiveView = bindMethodSignature('StopLiveView');
+const getLastDownloadedImageFilename = bindMethodSignature('GetLastDownloadedImageFilename');
 const startVideo = bindMethodSignature('StartVideo');
 const stopVideo = bindMethodSignature('StopVideo');
 const getPreviewImage = bindMethodSignature('GetPreviewImage');
 
 beginSession( {} ,resultHandler);
-
 setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);//Sets the location to save videos and photos.
 
-startLiveView( {} ,resultHandler);//This must be called before recording video.
 
 const previewImage = function(){
-  //  getPreviewImage({}, previewImageResultHandler);
+    getPreviewImage({}, previewImageResultHandler);
+}
+
+let previewIntervalId;
+
+const takeStillPhoto = function() {
+    takePhoto({}, resultHandler);
+    getLastDownloadedImageFilename({},resultHandler);
 }
 
 const record=function() {
+    startLiveView( {} ,resultHandler);//This must be called before recording video.
     startVideo({}, resultHandler);
-    setInterval(previewImage,90);
+    previewIntervalId = setInterval(previewImage,90);
     setTimeout(finishRecord,4000);
 }
 
 const finishRecord=function() {
     stopVideo({}, resultHandler);
+    getLastDownloadedImageFilename({},resultHandler);
+    clearInterval(previewIntervalId);
 }
 
 
-setTimeout(record,500);
-//endSession( {} ,resultHandler);
+setTimeout(takeStillPhoto,500);
+setTimeout(record,2500);
 
-//Set the path to save photos from the camera:
-//setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
-//Take a still photo
-//takePhoto( {} ,resultHandler);
-//startVideo({}, resultHandler);//NB this is a stub, not yet implemented
-//stopVideo({}, resultHandler);//NB this is a stub, not yet implemented
