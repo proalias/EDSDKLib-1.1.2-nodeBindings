@@ -1,0 +1,18 @@
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64" xmlns:dc="http://purl.org/dc/elements/1.1/">
+ <circle cy="32" cx="32" r="29.062" fill="#333"/>
+ <g transform="translate(-.004633 -.23687)">
+  <path id="a" d="m1.1186 32c2e-7 -5.2381 1.3324-10.39 3.8719-14.972l13.432 26.054z" fill="#8d8d8d"/>
+  <use xlink:href="#a" transform="rotate(30 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(60 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(90 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(150 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(180 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(210 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(240 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(-90 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(-60 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <use xlink:href="#a" transform="rotate(-30 32.005 32.237)" height="100%" width="100%" y="0" x="0"/>
+  <path d="m47.653 5.6072c4.536 2.6191 8.332 6.3488 11.03 10.839l-29.28-1.394z" fill="#ff580b"/>
+ </g>
+ <circle cx="32" stroke-linecap="round" stroke="#323232" cy="32" r="29.062" stroke-width="4.0648" fill="none"/>
+</svg>

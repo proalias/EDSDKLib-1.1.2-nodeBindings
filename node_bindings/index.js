@@ -24,53 +24,52 @@ const resultHandler = function(error, result) {
     }
 }
 
-
-const getPreviewImageHandle = function(error, result){
+const previewImageResultHandler = function(error, result) {
     if (!error) {
         if (result.success) {
             console.log("Callback on success:" + result.message);
-        }else{
+        } else {
             console.log("ERROR:" + result.message);
         }
-    }else{ console.log("ERROR:" + error.message);}
+    } else {
+        console.log("ERROR:" + error.message);
+    }
 }
 
 
 
-
 const setOutputPath = bindMethodSignature('SetOutputPath');
-const takePhoto = bindMethodSignature('TakePhoto');
+//const takePhoto = bindMethodSignature('TakePhoto');
 const beginSession = bindMethodSignature('BeginSession');
 const endSession = bindMethodSignature('EndSession');
 
-
+const startLiveView = bindMethodSignature('StartLiveView');
 const startVideo = bindMethodSignature('StartVideo');
 const stopVideo = bindMethodSignature('StopVideo');
 const getPreviewImage = bindMethodSignature('GetPreviewImage');
 
-
 beginSession( {} ,resultHandler);
-setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);
+
+setOutputPath( {outputPath: 'C:\\pictures'}, resultHandler);//Sets the location to save videos and photos.
+
+startLiveView( {} ,resultHandler);//This must be called before recording video.
+
+const previewImage = function(){
+  //  getPreviewImage({}, previewImageResultHandler);
+}
 
 const record=function() {
     startVideo({}, resultHandler);
+    setInterval(previewImage,90);
     setTimeout(finishRecord,4000);
 }
 
 const finishRecord=function() {
     stopVideo({}, resultHandler);
-    setTimeout(takePhotoAfter2Secs,4000);
 }
 
-const takePhotoAfter2Secs=function() {
-    stopVideo({}, resultHandler);
-    setTimeout(record,4000);
-}
 
-takePhoto( {} ,resultHandler);
-
-setTimeout(record,4000);
-
+setTimeout(record,500);
 //endSession( {} ,resultHandler);
 
 //Set the path to save photos from the camera:
