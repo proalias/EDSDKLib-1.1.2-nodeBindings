@@ -1,0 +1,9 @@
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\bin\Debug\ConsoleExample.pdb
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\bin\Debug\EDSDKLib.dll
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\bin\Debug\EDSDKLib.pdb
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\obj\x86\Debug\ConsoleExample.csprojResolveAssemblyReference.cache
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\obj\x86\Debug\ConsoleExample.csproj.CoreCompileInputs.cache
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\obj\x86\Debug\ConsoleExample.csproj.CopyComplete
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\obj\x86\Debug\ConsoleExample.pdb
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\bin\Debug\ConsoleExample.dll
+C:\Users\alias_c0y25lt\Documents\node-canon-csharp-vs\EDSDKLib-1.1.2\ConsoleExample\obj\x86\Debug\ConsoleExample.dll
